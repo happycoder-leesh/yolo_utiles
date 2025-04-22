@@ -1,5 +1,6 @@
 import os
 import glob
+import argparse
 from collections import Counter
 
 def count_yolo_labels(labels_dir):
@@ -33,11 +34,26 @@ def count_yolo_labels(labels_dir):
     
     return total_images, class_counts
 
-if __name__ == '__main__':
-    labels_directory = '/home/oms/leesh/raw_data/yolo_final_datasets/abandonment_v3/train/labels'  # 여기를 실제 경로로 수정
-    total_imgs, counts = count_yolo_labels(labels_directory)
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=""
+    )
+    
+    parser.add_argument(
+        "-l", "--label_path",
+        default="",
+        required=True
+    )
+    
+    args = parser.parse_args()
+    
+    total_imgs, counts = count_yolo_labels(args.label_path)
     
     print(f"전체 이미지(레이블) 수: {total_imgs}")
     print("클래스별 인스턴스 수:")
     for cls, cnt in sorted(counts.items()):
         print(f"  클래스 {cls}: {cnt}개")
+
+if __name__ == '__main__':
+    main()
