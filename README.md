@@ -19,8 +19,10 @@ YOLO 포맷 데이터셋 전처리 및 시각화 스크립트 모음입니다.
 ## 🌟 주요 기능
 - 🔄 **클래스 인덱스 리매핑**  
   `yolo_format_cls_index_reset.py`  
-- 📊 **이미지/인스턴스 통계 계산**  
-  `yolo_format_datasets_count_images_and_instance.py`  
+- 📊 **이미지/인스턴스 통계 계산**
+  - [train or val / images or labels], [images or labels / train or val]  모두 가능
+
+  `yolo_format_datasets_total_validate.py`  
 - 🎲 **무작위 샘플 시각화**  
   `yolo_format_datasets_random_visualize.py`  
 - 🎯 **타겟 클래스 시각화**  
@@ -35,7 +37,7 @@ YOLO 포맷 데이터셋 전처리 및 시각화 스크립트 모음입니다.
 ## 📦 설치
 
 ```bash
-git clone https://github.com/<your_username>/<repo_name>.git
+git clone https://github.com/happycoder-leesh/yolo_utiles.git
 pip install -r requirements.txt
 ```
 
@@ -54,7 +56,7 @@ python yolo_format_cls_index_reset.py   --label_path /path/to/labels   --class-m
 
 ### 2. 데이터 통계 계산
 ```bash
-python yolo_format_datasets_count_images_and_instance.py   --labels_path /path/to/labels
+python yolo_format_datasets_total_validate.py   --root /path/to/labels --check-test(테스트 데이터 있을 시)
 ```
 
 ### 3. 무작위 샘플 시각화
