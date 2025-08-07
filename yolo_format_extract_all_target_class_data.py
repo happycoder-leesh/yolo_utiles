@@ -3,23 +3,23 @@ import shutil
 import glob
 
 # === 설정 ===
-image_dir = '/home/oms/leesh/raw_data/HTS_abandonment/train/coco/coco/images'   # 원본 이미지 폴더
-label_dir = '/home/oms/leesh/raw_data/HTS_abandonment/train/coco/coco/labels'   # 원본 레이블 폴더
+image_dir = '/home/omeye/leesh/yolo_datasets/abandonment_v7_non_coco/train/images'   # 원본 이미지 폴더
+label_dir = '/home/omeye/leesh/yolo_datasets/abandonment_v7_non_coco/train/labels'   # 원본 레이블 폴더
 
-target_cls_ids = {1, 2}      # 추출할 클래스 인덱스 집합 (예: 0, 2, 5번 클래스만)
+target_cls_ids = {0, 8, 9, 10, 11, 12, 13, 14}      # 추출할 클래스 인덱스 집합 (예: 0, 2, 5번 클래스만)
 
-output_image_dir = '/home/oms/leesh/raw_data/HTS_abandonment/train/coco/coco_extract/images'
-output_label_dir = '/home/oms/leesh/raw_data/HTS_abandonment/train/coco/coco_extract/labels'
+output_image_dir = '/home/omeye/leesh/yolo_datasets/abandonment_kisa_v4/train/images'
+output_label_dir = '/home/omeye/leesh/yolo_datasets/abandonment_kisa_v4/train/labels'
 
 os.makedirs(output_image_dir, exist_ok=True)
 os.makedirs(output_label_dir, exist_ok=True)
 
 # === 이미지 + 라벨 경로 ===
-image_paths = glob.glob(os.path.join(image_dir, '*.jpg'))  # 필요하면 .png 등으로 수정
+image_paths = glob.glob(os.path.join(image_dir, '*.png'))  # 필요하면 .png 등으로 수정
 
 for img_path in image_paths:
     file_name = os.path.basename(img_path)
-    label_path = os.path.join(label_dir, file_name.replace('.jpg', '.txt'))  # .png면 수정 필요
+    label_path = os.path.join(label_dir, file_name.replace('.png', '.txt'))  # .png면 수정 필요
 
     if not os.path.exists(label_path):
         continue  # 라벨 파일 없으면 스킵
