@@ -1,50 +1,47 @@
 import os
 import shutil
 import glob
+import argparse
 
-# === 설정 ===
-image_dir = '/home/omeye/leesh/yolo_datasets/abandonment_v7_non_coco/train/images'   # 원본 이미지 폴더
-label_dir = '/home/omeye/leesh/yolo_datasets/abandonment_v7_non_coco/train/labels'   # 원본 레이블 폴더
+def main(args):
+    os.makedirs(args.output_image_dir, exist_ok=True)
+    os.makedirs(args.output_label_dir, exist_ok=True)
 
-target_cls_ids = {0, 8, 9, 10, 11, 12, 13, 14}      # 추출할 클래스 인덱스 집합 (예: 0, 2, 5번 클래스만)
+    # 모든 확장자 지원
+    image_paths = []
+    for ext in ('*.png', '*.jpg', '*.jpeg', '*.bmp', '*.tif', '*.tiff', '*.webp'):
+        image_paths.extend(glob.glob(os.path.join(args.image_dir, ext)))
 
-output_image_dir = '/home/omeye/leesh/yolo_datasets/abandonment_kisa_v4/train/images'
-output_label_dir = '/home/omeye/leesh/yolo_datasets/abandonment_kisa_v4/train/labels'
+    for img_path in image_paths:
+        file_name = os.path.basename(img_path)
+        label_path = os.path.join(args.label_dir, os.path.splitext(file_name)[0] + '.txt')
 
-os.makedirs(output_image_dir, exist_ok=True)
-os.makedirs(output_label_dir, exist_ok=True)
-
-# === 이미지 + 라벨 경로 ===
-image_paths = glob.glob(os.path.join(image_dir, '*.png'))  # 필요하면 .png 등으로 수정
-
-for img_path in image_paths:
-    file_name = os.path.basename(img_path)
-    label_path = os.path.join(label_dir, file_name.replace('.png', '.txt'))  # .png면 수정 필요
-
-    if not os.path.exists(label_path):
-        continue  # 라벨 파일 없으면 스킵
-
-    with open(label_path, 'r') as f:
-        lines = f.readlines()
-
-    if not lines:
-        continue  # 빈 파일은 스킵
-
-    valid = True
-    for line in lines:
-        parts = line.strip().split()
-        if not parts:
+        if not os.path.exists(label_path):
             continue
-        cls_id = int(parts[0])
-        if cls_id not in target_cls_ids:
-            valid = False
-            break
 
-    # 만약 모든 클래스가 target_cls_ids 안에만 있으면
-    if valid:
-        # 이미지 복사
-        shutil.copy(img_path, os.path.join(output_image_dir, file_name))
-        # 라벨 복사 (필터링 없이 전체 저장)
-        shutil.copy(label_path, os.path.join(output_label_dir, file_name.replace('.jpg', '.txt')))
+        with open(label_path, 'r') as f:
+            lines = f.readlines()
 
-print(f"[INFO] 완료! {output_image_dir} 와 {output_label_dir}에 타겟 클래스만 있는 데이터가 저장되었습니다.")
+        if not lines:
+            continue
+
+        # 모든 클래스가 target_classes 안에만 있으면 복사
+        valid = all(int(line.strip().split()[0]) in args.target_classes for line in lines if line.strip())
+
+        if valid:
+            shutil.copy(img_path, os.path.join(args.output_image_dir, file_name))
+            shutil.copy(label_path, os.path.join(args.output_label_dir, os.path.splitext(file_name)[0] + '.txt'))
+
+    print(f"[INFO] 완료! {args.output_image_dir} 와 {args.output_label_dir}에 타겟 클래스만 있는 데이터가 저장되었습니다.")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Extract YOLO-format dataset only in target classes')
+    parser.add_argument('--image_dir', type=str, required=True, help="Origin image directory")
+    parser.add_argument('--label_dir', type=str, required=True, help="Origin label directory")
+    parser.add_argument('--target_classes', nargs='+', type=int, required=True,
+                        help='Target class IDs (e.g., 0 8 9 10 11 12)')
+    parser.add_argument('--output_image_dir', type=str, required=True, help="Output image directory")
+    parser.add_argument('--output_label_dir', type=str, required=True, help="Output label directory")
+    args = parser.parse_args()
+
+    main(args)

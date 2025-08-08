@@ -3,7 +3,7 @@
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
 </p>
 
-# 🦾 YOLO Dataset Utilities
+#  YOLO Dataset Utilities
 
 YOLO 포맷 데이터셋 전처리 및 시각화 스크립트 모음입니다.  
 클래스 인덱스 리매핑, 데이터 통계, 샘플 시각화, 클래스별 데이터 추출, train/val 분할, Segmentation → Detection 변환 등 다양한 유틸리티를 제공합니다.
@@ -13,8 +13,6 @@ YOLO 포맷 데이터셋 전처리 및 시각화 스크립트 모음입니다.
 - 📦 설치  
 - ⚙️ 사용 예시  
 - 🛠️ 옵션 및 설정  
-- 🤝 기여하기  
-- 📝 라이선스  
 
 ## 🌟 주요 기능
 - 🔄 **클래스 인덱스 리매핑**  
@@ -53,31 +51,47 @@ pip install -r requirements.txt
 ```bash
 python yolo_format_cls_index_reset.py   --label_path /path/to/labels   --class-mapping-json "{origin_cls_idx:mapping_cls_idx, origin_cls_idx:mapping_cls_idx, ...}"
 ```
+<br>
 
 ### 2. 데이터 통계 계산
 ```bash
 python yolo_format_datasets_total_validate.py   --root /path/to/labels --check-test(테스트 데이터 있을 시)
 ```
+<br>
 
 ### 3. 무작위 샘플 시각화
 ```bash
 python yolo_format_datasets_random_visualize.py   --image_dir /path/to/images   --label_dir /path/to/labels   --output_dir /path/to/output
 ```
+<br>
 
 ### 4. 타겟 클래스 시각화
 ```bash
 python yolo_format_datasets_target_cls_visualize.py   --target_classes 2,5   --input_image_dir /path/to/images   --input_label_dir /path/to/labels   --output_dir /path/to/output
 ```
+<br>
 
 ### 5. 클래스별 데이터 추출
+
+#### 5.1 선택한 클래스들만 존재하는 데이터 추출
+
+```bash
+python yolo_format_extract_all_target_class_data.py   --image_dir /path/to/images   --label_dir /path/to/labels   --target_cls_ids 1,2   --output_image_dir /path/to/output/images   --output_label_dir /path/to/output/labels
+```
+
+#### 5.2 선택한 클래스 중 하나라도 있는 데이터 추출
+
 ```bash
 python yolo_format_extract_class_data.py   --image_dir /path/to/images   --label_dir /path/to/labels   --target_cls_ids 1,2   --output_image_dir /path/to/output/images   --output_label_dir /path/to/output/labels
 ```
+
+<br>
 
 ### 6. Train/Val 분할
 ```bash
 python yolo_format_split_train_val.py   --source_image_dir /path/to/images   --source_label_dir /path/to/labels   --output_base_dir /path/to/output   --train_ratio 0.8
 ```
+<br>
 
 ### 7. Segmentation → Detection 변환
 ```bash
